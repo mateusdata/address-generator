@@ -133,7 +133,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-50 h-screen'>
+    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-200 h-screen'>
       {contextHolder}
       <div className='flex gap-2 items-center-center'>
         <h1 className='font-medium text-lg'>Gerador de Estados e DDDs</h1>
@@ -145,7 +145,7 @@ const App: React.FC = () => {
 
 
 
-      <form className='flex gap-2 flex-col bg-gray-50  dark:bg-[#202124] mt-5'>
+      <form className='flex gap-2 flex-col bg-gray-200  dark:bg-[#202124] mt-5'>
         <div className='flex flex-col md:flex-row gap-3'>
           <input onClick={() => copy(local?.endereco, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
           <input onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />

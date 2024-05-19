@@ -177,7 +177,25 @@ const App: React.FC = () => {
           {dados.map((item, index) => (
             <button onClick={() => consultCep(item.uf)} disabled={loading}
               className={`hover:text-ellipsis active:outline-blue-500  dark:active:outline-gray-900
-            active:outline text-gray-200 dark:text-gray-400 mb-2 p-1 px-2 
+            active:outline text-gray-200 dark:text-gray-400 mb-2 p-1 px-2
+            ${index === 0 && "bg-blue-600 hover:bg-blue-700"} 
+            ${index > 0 && index < 3 && "bg-orange-600 hover:bg-orange-700"} 
+            ${index === 3 && "bg-green-600 hover:bg-green-700"} 
+            ${index > 3 && index < 6 && "bg-yellow-600 hover:bg-yellow-700"} 
+            ${index === 6 && "bg-purple-600 hover:bg-purple-700"} 
+            ${index > 6 && index < 14 && "bg-indigo-600 hover:bg-indigo-700"} 
+            ${index > 13 && index < 16 && "bg-red-600 hover:bg-red-700"}
+            ${index === 16 && "bg-cyan-600 hover:bg-cyan-700"} 
+
+            ${index > 16 && index < 22 && "bg-gray-800 hover:bg-gray-800"}
+            ${index > 21 && "bg-[#4527a0] hover:bg-[#4527a0]"}
+            
+            
+
+
+
+
+ 
             rounded-lg ${loading ? "bg-gray-500 text-gray-50 dark:text-gray-400 hover:bg-gray-500 dark:active:outline-gray-900 active:outline-gray-300 " : "bg-blue-700 dark:bg-gray-800 hover:bg-blue-900 "}`} key={index}>
               <p>{item.estado} : {item.ddds}</p>
             </button>
@@ -190,7 +208,7 @@ const App: React.FC = () => {
       </div>
       <div className='flex flex-col  mt-5'>
         <span>Ips usados recentemente:</span>
-        {myIps && <button onClick={deleteIps} type="button" className="py-1 dark:bg-[#4e4f52] px-3 w-52 inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg border border-transparent bg-red-400  hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none text-white dark:hover:bg-red-300 dark:text-red-50 dark:hover:text-red-50">
+        {myIps && <button onClick={deleteIps} type="button" className="py-1 dark:bg-[#4e4f52] px-3 w-52 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-400  hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none text-white dark:hover:bg-red-300 dark:text-red-50 dark:hover:text-red-50">
           Limpar IPS
         </button>}
 

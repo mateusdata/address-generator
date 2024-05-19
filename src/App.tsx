@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import cepEstados from './utils/CepEstados';
 import dados from './utils/Dados';
+import { Button, notification, Space } from 'antd';
+
 
 interface Local {
   endereco: string;
@@ -10,15 +12,21 @@ interface Local {
   cep: string;
 }
 
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
+
+
 const App: React.FC = () => {
-  const [local, setLocal] = useState<Local | any>({
+  const [local, setLocal] = useState({
     endereco: '',
     cidade: '',
     estado: '',
-    cep: ''
+    cep: '',
+    ddd: ""
   });
   const [ip, setIp] = useState('');
   const [url, setUrl] = useState("");
+  const [api, contextHolder] = notification.useNotification();
+
 
   useEffect(() => {
     axios.get('https://api.ipify.org?format=json')
@@ -30,6 +38,13 @@ const App: React.FC = () => {
       });
   }, []);
 
+  const openNotificationWithIcon = (type: NotificationType) => {
+    api[type]({
+      message: 'Copiando com sucesso!',
+      description:
+        'ss',
+    });
+  };
 
   const consultCep = async (cep: any) => {
     try {
@@ -50,30 +65,43 @@ const App: React.FC = () => {
 
     } catch (error) {
       console.error('Erro ao buscar o CEP:', error);
-      setLocal([])
+
     }
   };
 
+  const copy = async (message: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(message);
+
+    } catch (error) {
+      console.log("erro ao copiar")
+    }
+
+    openNotificationWithIcon("success");
+  };
 
 
   return (
     <div className='p-5 bg-gray-50 h-screen'>
+
+      {contextHolder}
+
       <h1 className='font-medium text-lg'>Gerador de Estados e DDDs</h1>
 
 
       <form className='flex gap-2 flex-col bg-gray-50 mt-5'>
         <div className='flex gap-3'>
-          <input className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' disabled type="text" placeholder="Endereço" value={local.endereco} />
-          <input className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' disabled type="text" placeholder="Cidade" value={local.cidade} />
+          <input onClick={() => copy(local?.endereco, 1)} className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
+          <input onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
         </div>
 
         <div className='flex gap-3'>
-          <input className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' disabled type="text" placeholder="Estado" value={local.estado} />
-          <input className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' disabled type="text" placeholder="CEP" value={local.cep} />
+          <input onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
+          <input onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
         </div>
 
         <div className='flex gap-3'>
-          <input className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' disabled type="text" placeholder="DDD" value={local.ddd} />
+          <input onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 border outline-blue-600 px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
         </div>
       </form>
       {false && <a href={url}>{url}</a>
@@ -89,7 +117,7 @@ const App: React.FC = () => {
       </div>
 
       <div>
-        <h3 className='flex gap-2'>Seu IP é: <p className='text-green-500 animate-pulse'>{ip}</p></h3>
+        <h3 className='flex gap-2'>Seu IP é 🧐 : <p className='text-green-500 animate-pulse'>{ip}</p></h3>
       </div>
     </div>
   );

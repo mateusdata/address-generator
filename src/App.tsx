@@ -126,27 +126,32 @@ const App: React.FC = () => {
       {contextHolder}
       <div className='flex gap-2 items-center-center'>
         <h1 className='font-medium text-lg'>Gerador de Estados e DDDs</h1>
-        <a href="https://github.com/mateusdata"><GithubOutlined  className='animate-pulse' style={{fontSize:25, }} /></a>
+        <a href="https://github.com/mateusdata"><GithubOutlined className='animate-pulse' style={{ fontSize: 25, }} /></a>
       </div>
+
       <span className='text-red-600'>{error}</span>
       <span className='text-red-600'>
         {loading && <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />}
       </span>
+
       <form className='flex gap-2 flex-col bg-gray-50 mt-5'>
-        <div className='flex gap-3'>
+        <div className='flex flex-col md:flex-row gap-3'>
           <input onClick={() => copy(local?.endereco, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
           <input onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
         </div>
-        <div className='flex gap-3'>
+        <div className='flex flex-col md:flex-row gap-3'>
           <input onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
           <input onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
         </div>
-        <div className='flex gap-3'>
+        <div className='flex flex-col md:flex-row gap-3'>
           <input onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
         </div>
       </form>
+
       {false && <a href={url}>{url}</a>}
+
       <div className='mt-8'>
+        
         <h3>Lista de Estados e DDDs:</h3>
         <button className='flex flex-wrap gap-2 border p-2 rounded-lg py-5 mt-5'>
           {dados.map((item, index) => (

@@ -77,7 +77,7 @@ const App: React.FC = () => {
 
   const consultCep = async (cep: any, retryCount: number = 0): Promise<void> => {
     try {
-      if (retryCount >= 10) {
+      if (retryCount >= 100) {
         console.log("Número máximo de tentativas alcançado.");
         setError("Ops!. Ocorreu um erro, tenha paciencia.")
         setLoading(false)
@@ -103,7 +103,7 @@ const App: React.FC = () => {
         setLoading(false)
         setLocal({
           ...local,
-          endereco: response?.data?.logradouro,
+          endereco: response?.data?.logradouro ? response?.data?.logradouro : "Rua trinta e um de março",
           cidade: response?.data?.localidade,
           estado: response?.data?.uf,
           cep: response?.data?.cep,
@@ -134,6 +134,9 @@ const App: React.FC = () => {
 
   return (
     <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-200 h-screen'>
+
+
+      
       {contextHolder}
       <div className='flex gap-2 items-center-center'>
         <h1 className='font-medium text-lg'>Gerador de Estados e DDDs</h1>
@@ -218,7 +221,7 @@ const App: React.FC = () => {
           ))}
         </div>
       </div>
-
+     
     </div>
   );
 }

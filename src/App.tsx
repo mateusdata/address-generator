@@ -37,7 +37,7 @@ const App: React.FC = () => {
     api[type]({
       message: 'Copiando com sucesso!',
       description:
-        'ss',
+        'Ei maluku, vc copiou o texto',
     });
   };
 

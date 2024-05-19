@@ -2,15 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import cepEstados from './utils/CepEstados';
 import dados from './utils/Dados';
-import { Button, notification, Space } from 'antd';
+import {  notification,  } from 'antd';
 
 
-interface Local {
-  endereco: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-}
+
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 

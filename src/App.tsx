@@ -20,8 +20,18 @@ const App: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [myIps, setMyIps] = useState<any>([]);
+  const [darkMode, setDarkMode] = useState(localStorage.theme === 'dark');
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.theme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.theme = 'light';
+    }
+  }, [darkMode]);
 
   useEffect(() => {
     const savedIpsString = localStorage.getItem('myIps');
@@ -69,7 +79,7 @@ const App: React.FC = () => {
     try {
       if (retryCount >= 10) {
         console.log("Número máximo de tentativas alcançado.");
-        setError("Ops!, ainda não cadastrei esses dados, tenha paciencia.")
+        setError("Ops!. Ocorreu um erro, tenha paciencia.")
         setLoading(false)
         setTimeout(() => {
           setError("")
@@ -119,63 +129,74 @@ const App: React.FC = () => {
   const deleteIps = () => {
     localStorage.removeItem("myIps")
     setMyIps("")
+    window.location.reload();
   }
 
   return (
-    <div className='p-5 bg-gray-50 h-screen'>
+    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-50 h-screen'>
       {contextHolder}
       <div className='flex gap-2 items-center-center'>
         <h1 className='font-medium text-lg'>Gerador de Estados e DDDs</h1>
         <a href="https://github.com/mateusdata"><GithubOutlined className='animate-pulse' style={{ fontSize: 25, }} /></a>
+        <button className="bg-gray-700 hover:bg-gray-800 text-white dark:text-gray-400 font-bold py-1 px-2 rounded" onClick={() => setDarkMode(!darkMode)}>
+          {darkMode ? 'Modo Claro' : 'Modo Escuro'}
+        </button>
       </div>
 
-      <span className='text-red-600'>{error}</span>
-      <span className='text-red-600'>
-        {loading && <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />}
-      </span>
 
-      <form className='flex gap-2 flex-col bg-gray-50 mt-5'>
+
+      <form className='flex gap-2 flex-col bg-gray-50  dark:bg-[#202124] mt-5'>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input onClick={() => copy(local?.endereco, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
-          <input onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
+          <input onClick={() => copy(local?.endereco, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
+          <input onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
         </div>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
-          <input onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
+          <input onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
+          <input onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
         </div>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
+          <input onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
         </div>
       </form>
 
       {false && <a href={url}>{url}</a>}
 
-      <div className='mt-8'>
-        
-        <h3>Lista de Estados e DDDs:</h3>
-        <button className='flex flex-wrap gap-2 border p-2 rounded-lg py-5 mt-5'>
+      <div className='mt-5'>
+
+        <div className='text-red-600  min-h-8 min-w-6'>
+          <span>
+            {error}
+          </span>
+        </div>
+        <span className='flex gap-3'>
+          <h3>Lista de Estados e DDDs:</h3>
+          {loading && <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />}
+        </span>
+
+        <button className='flex flex-wrap gap-2 border dark:border-gray-800 p-2 rounded-lg py-5 mt-5'>
           {dados.map((item, index) => (
             <button onClick={() => consultCep(item.uf)} disabled={loading}
-              className={`bg-blue-800 hover:bg-blue-500 
-            hover:text-ellipsis active:outline-blue-500 
-            active:outline text-gray-200 mb-2 p-1 px-2 
-            rounded-lg ${loading && "bg-gray-300 text-gray-700 hover:bg-gray-300 active:outline-gray-300 "}`} key={index}>
+              className={`hover:text-ellipsis active:outline-blue-500  dark:active:outline-gray-900
+            active:outline text-gray-200 dark:text-gray-400 mb-2 p-1 px-2 
+            rounded-lg ${loading ? "bg-gray-500 text-gray-50 dark:text-gray-400 hover:bg-gray-500 dark:active:outline-gray-900 active:outline-gray-300 " : "bg-blue-700 dark:bg-gray-800 hover:bg-blue-900 "}`} key={index}>
               <p>{item.estado} : {item.ddds}</p>
             </button>
           ))}
         </button>
+
       </div>
       <div>
         <h3 className='flex gap-2'>Seu IP é 🧐 : <p className='text-green-500 animate-pulse'>{ip}</p></h3>
       </div>
       <div className='flex flex-col  mt-5'>
         <span>Ips usados recentemente:</span>
-        {myIps && <button onClick={deleteIps} type="button" className="py-2 px-3 w-52 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-200  hover:bg-red-400 disabled:opacity-50 disabled:pointer-events-none text-white dark:hover:bg-red-600 dark:text-red-500 dark:hover:text-red-50">
+        {myIps && <button onClick={deleteIps} type="button" className="py-1 dark:bg-[#4e4f52] px-3 w-52 inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg border border-transparent bg-red-400  hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none text-white dark:hover:bg-red-300 dark:text-red-50 dark:hover:text-red-50">
           Limpar IPS
         </button>}
-        <div className='flex flex-col gap-2 mt-2'>
+
+        <div className='flex flex-col gap-2 mt-2 overflow-auto border dark:border-gray-600 max-h-52 bg-gray-100 dark:bg-[#202124] w-full sm:w-1/5 rounded-lg p-1 shadow-2xl'>
           {myIps && myIps?.map((item: any, index: number) => (
-            <span className='rounded-xl text-red-500' key={index}>{item}</span>
+            <span className='rounded-xl text-red-500 dark:text-red-300 ' key={index}>{item}</span>
           ))}
         </div>
       </div>

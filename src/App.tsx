@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [myIps, setMyIps] = useState<any>([]);
   const [darkMode, setDarkMode] = useState(localStorage.theme === 'dark');
 
@@ -56,7 +57,6 @@ const App: React.FC = () => {
         });
       } catch (error) {
         console.error('Erro ao buscar o IP:', error);
-        alert('Erro ao buscar o IP. Por favor, tente novamente mais tarde.');
       }
     };
 
@@ -119,7 +119,9 @@ const App: React.FC = () => {
 
   const copy = async (message: string, index: number) => {
     try {
+      setIsDisabled(true)
       await navigator.clipboard.writeText(message);
+      setIsDisabled(false)
     } catch (error) {
       console.log("erro ao copiar")
     }
@@ -133,14 +135,15 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-200 h-screen'>
+    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-200 min-h-screen'>
 
-
-      
       {contextHolder}
-      <div className='flex gap-2 items-center-center'>
-        <h1 className='font-medium text-lg'>Gerador de Estados e DDDs</h1>
-        <a href="https://github.com/mateusdata"><GithubOutlined className='animate-pulse' style={{ fontSize: 25, }} /></a>
+      <div className='flex gap-2 items-center-center flex-col sm:flex-row items-center'>
+        <div className='flex gap-5'>
+          <h1 className='font-medium text-lg text-center'>Gerador de Estados e DDDs</h1>
+          <a href="https://github.com/mateusdata"><GithubOutlined className='animate-pulse' style={{ fontSize: 25, }} /></a>
+        </div>
+
         <button className="bg-gray-700 hover:bg-gray-800 text-white dark:text-gray-400 font-bold py-1 px-2 rounded" onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? 'Modo Claro' : 'Modo Escuro'}
         </button>
@@ -150,15 +153,15 @@ const App: React.FC = () => {
 
       <form className='flex gap-2 flex-col bg-gray-200  dark:bg-[#202124] mt-5'>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input onClick={() => copy(local?.endereco, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
-          <input onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
+          <input disabled={isDisabled} onClick={() => copy(local?.endereco, 1)} className='rounded-md disabled:bg-white p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
+          <input disabled={isDisabled} onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
         </div>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
-          <input onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
+          <input disabled={isDisabled} onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
+          <input disabled={isDisabled} onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
         </div>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
+          <input disabled={isDisabled} onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
         </div>
       </form>
 
@@ -221,7 +224,7 @@ const App: React.FC = () => {
           ))}
         </div>
       </div>
-     
+
     </div>
   );
 }

@@ -152,15 +152,34 @@ const App: React.FC = () => {
 
       <form className='flex gap-2 flex-col bg-gray-200  dark:bg-[#202124] mt-5'>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input disabled={isDisabled} onClick={() => copy(local?.endereco, 1)} className='rounded-md disabled:bg-white p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
-          <input disabled={isDisabled} onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
+          <div className='flex flex-col'>
+            <label htmlFor="">Rua:</label>
+            <input disabled={isDisabled} onClick={() => copy(local?.endereco, 1)} className='rounded-md disabled:bg-white p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
+
+          </div>
+          <div className='flex flex-col'>
+            <label htmlFor="">Cidade:</label>
+            <input disabled={isDisabled} onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
+          </div>
         </div>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input disabled={isDisabled} onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
-          <input disabled={isDisabled} onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
+
+          <div className='flex flex-col'>
+            <label htmlFor="">Cep:</label>
+            <input disabled={isDisabled} onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
+          </div>
+          <div className='flex flex-col'>
+            <label htmlFor="">Estado:</label>
+            <input disabled={isDisabled} onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
+
+          </div>
         </div>
         <div className='flex flex-col md:flex-row gap-3'>
-          <input disabled={isDisabled} onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
+
+          <div className='flex flex-col'>
+            <label htmlFor="">DDD:</label>
+            <input disabled={isDisabled} onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
+          </div>
         </div>
       </form>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import cepEstados from './utils/CepEstados';
 import dados from './utils/Dados';
-import { Spin, notification } from 'antd';
+import { QRCode, Spin, notification } from 'antd';
 import { LoadingOutlined, GithubOutlined } from '@ant-design/icons';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -77,7 +77,7 @@ const App: React.FC = () => {
 
   const consultCep = async (cep: any, retryCount: number = 0): Promise<void> => {
     try {
-      if (retryCount >= 100) {
+      if (retryCount >= 3) {
         console.log("Número máximo de tentativas alcançado.");
         setError("Ops!. Ocorreu um erro, tenha paciencia.")
         setLoading(false)
@@ -149,40 +149,49 @@ const App: React.FC = () => {
       </div>
 
 
+      <div className='flex flex-col sm:flex-row gap-14 items-center sm:items-start'>
 
-      <form className='flex gap-2 flex-col bg-gray-200  dark:bg-[#202124] mt-5'>
-        <div className='flex flex-col md:flex-row gap-3'>
-          <div className='flex flex-col'>
-            <label htmlFor="">Rua:</label>
-            <input disabled={isDisabled} onClick={() => copy(local?.endereco, 1)} className='rounded-md disabled:bg-white p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
+        <form className='flex gap-2 flex-col bg-gray-200  dark:bg-[#202124] mt-5'>
+          <div className='flex flex-col md:flex-row gap-3'>
+            <div className='flex flex-col'>
+              <label htmlFor="">Rua:</label>
+              <input disabled={isDisabled} onClick={() => copy(local?.endereco, 1)} className='rounded-md disabled:bg-white p-1 dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Endereço" value={local.endereco} />
 
+            </div>
+            <div className='flex flex-col'>
+              <label htmlFor="">Cidade:</label>
+              <input disabled={isDisabled} onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
+            </div>
           </div>
-          <div className='flex flex-col'>
-            <label htmlFor="">Cidade:</label>
-            <input disabled={isDisabled} onClick={() => copy(local?.cidade, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Cidade" value={local.cidade} />
-          </div>
-        </div>
-        <div className='flex flex-col md:flex-row gap-3'>
+          <div className='flex flex-col md:flex-row gap-3'>
 
-          <div className='flex flex-col'>
-            <label htmlFor="">Cep:</label>
-            <input disabled={isDisabled} onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
-          </div>
-          <div className='flex flex-col'>
-            <label htmlFor="">Estado:</label>
-            <input disabled={isDisabled} onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
+            <div className='flex flex-col'>
+              <label htmlFor="">Cep:</label>
+              <input disabled={isDisabled} onClick={() => copy(local?.cep, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="CEP" value={local.cep} />
+            </div>
+            <div className='flex flex-col'>
+              <label htmlFor="">Estado:</label>
+              <input disabled={isDisabled} onClick={() => copy(local?.estado, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="Estado" value={local.estado} />
 
+            </div>
           </div>
-        </div>
-        <div className='flex flex-col md:flex-row gap-3'>
+          <div className='flex flex-col md:flex-row gap-3'>
 
-          <div className='flex flex-col'>
-            <label htmlFor="">DDD:</label>
-            <input disabled={isDisabled} onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
+            <div className='flex flex-col'>
+              <label htmlFor="">DDD:</label>
+              <input disabled={isDisabled} onClick={() => copy(local?.ddd, 1)} className='rounded-md p-1 disabled:bg-white  dark:font-semibold dark:bg-gray-800 dark:border-none border outline-none px-2 cursor-pointer' type="text" placeholder="DDD" value={local.ddd} />
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
 
+
+        <QRCode
+          errorLevel="H"
+          value="https://datagerador.vercel.app/"
+          icon="https://icones.pro/wp-content/uploads/2021/02/icone-de-broche-de-localisation-bleue.png"
+        />
+
+      </div>
       {false && <a href={url}>{url}</a>}
 
       <div className='mt-5'>

@@ -112,7 +112,6 @@ const App: React.FC = () => {
       }
     } catch (error) {
       console.error('Erro ao buscar o CEP:', error);
-      alert("Erro ao buscar o CEP. Por favor, tente novamente mais tarde.");
       setLoading(false)
     }
   };

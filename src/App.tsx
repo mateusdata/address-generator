@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import cepEstados from './utils/CepEstados';
 import dados from './utils/Dados';
-import { FloatButton, QRCode, Spin, notification } from 'antd';
+import { FloatButton, Spin, notification } from 'antd';
 import { LoadingOutlined, GithubOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { ReloadOutlined,DeleteOutlined  } from '@ant-design/icons';
@@ -53,8 +53,8 @@ const App: React.FC = () => {
             const updatedIps = [...prevIps, { ip: newIp, dataAcesso: currentDateTime }];
 
             // Check if the new IP is repeated
-            const isRepeated = prevIps.some((ipItem: any) => ipItem.ip === newIp);
-            if (isRepeated && updatedIps.length > prevIps.length) {
+            const isRepeated = myIps ? prevIps?.some((ipItem: any) => ipItem?.ip === newIp): false;
+            if (isRepeated && updatedIps?.length > prevIps?.length) {
               const notify = (type: NotificationType) => {
                 api[type]({
                   message: `Seu IP ${newIp} está repetido`,
@@ -156,16 +156,15 @@ const App: React.FC = () => {
   const deleteIps = () => {
     localStorage.removeItem("myIps")
     setMyIps("")
-    window.location.reload();
   }
   const repeatedIps = new Set();
-  myIps.forEach((item: any) => {
-    if (myIps.filter((ipItem: any) => ipItem.ip === item.ip).length > 1) {
-      repeatedIps.add(item.ip);
+  myIps && myIps?.forEach((item: any) => {
+    if (myIps?.filter((ipItem: any) => ipItem?.ip === item?.ip)?.length > 1) {
+      repeatedIps?.add(item?.ip);
     }
   });
   return (
-    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-200 min-h-screen xl:flex xl:flex-row'>
+    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-100 min-h-screen xl:flex xl:flex-row xl:gap-8'>
 
       <div>
       {contextHolder}
@@ -183,7 +182,7 @@ const App: React.FC = () => {
 
       <div className='flex flex-col sm:flex-row gap-14 items-center sm:items-start'>
 
-        <form className='flex gap-2 flex-col bg-gray-200  dark:bg-[#202124] mt-5'>
+        <form className='flex gap-2 flex-col bg-gray-100  dark:bg-[#202124] mt-5'>
           <div className='flex flex-col md:flex-row gap-3'>
             <div className='flex flex-col'>
               <label htmlFor="">Rua:</label>
@@ -232,7 +231,7 @@ const App: React.FC = () => {
           {loading && <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />}
         </span>
 
-        <button className='flex flex-wrap gap-2 border dark:border-gray-800 p-2 rounded-lg py-5 mt-2 xl:w-1/2'>
+        <button className='flex flex-wrap gap-2 border dark:border-gray-800 py-1 rounded-lg  wfull mt-2 p-2 2xl:w-1/1'>
           {dados.map((item, index) => (
             <button onClick={() => consultCep(item.uf)} disabled={loading}
               className={`hover:text-ellipsis active:outline-blue-500  dark:active:outline-gray-900
@@ -261,7 +260,7 @@ const App: React.FC = () => {
 
 
 
-      <div className='xl:w-full overflow-auto lg:max-h-[85vh] xl:border-gray-300 animate__animated animate__slideInUp rounded-2xl shadow-md xl:border p-5'>
+      <div className='2xl:w-full xl:w-[1700px]  overflow-auto lg:max-h-[85vh] xl:border-gray-300 dark:xl:border-gray-600 animate__animated animate__slideInUp rounded-2xl shadow-md xl:border p-5'>
         <div>
           <h3 className='flex gap-2  lg:text-2xl'>IP atual: <p className='text-orange-500 lg:text-2xl'>{ip}</p></h3>
         </div>
@@ -272,20 +271,20 @@ const App: React.FC = () => {
           <span>Ips usados recentemente:</span>
 
           <div className="overflow-x-auto mt-2">
-            <table className="table-auto w-[95%] mb-2">
+            <table className="table-auto 2xl:w-[95%]  mb-2">
               <thead>
-                <tr className="bg-gray-200">
-                  <th className="border border-gray-400 px-2 py-1">IP</th>
-                  <th className="border border-gray-400 px-2 py-1">Data de Acesso</th>
-                  <th className="border border-gray-400 px-2 py-1">Status</th>
+                <tr className="bg-gray-200 dark:bg-gray-700">
+                  <th className="border border-gray-400 dark:border-gray-600 px-2 py-1">IP</th>
+                  <th className="border border-gray-400 dark:border-gray-600 px-2 py-1">Data de Acesso</th>
+                  <th className="border border-gray-400 dark:border-gray-600 px-2 py-1">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {myIps.slice().reverse().map((item: any, index: any) => (
-                  <tr key={index} className={`$ bg-gray-100 text-gray-700`}>
-                    <td className="border border-gray-400 px-2 py-1">{item.ip}</td>
-                    <td className="border border-gray-400 px-2 py-1">{dayjs(item.dataAcesso).format('DD/MM/YYYY HH:mm:ss')}</td>
-                    <td className={`border border-gray-400 px-2 py-1  text-white ${repeatedIps.has(item.ip) ? "bg-red-500" : "bg-green-600"}`}>{repeatedIps.has(item.ip) ? 'Repetido' : 'Único'}</td>
+                {myIps && myIps?.slice()?.reverse()?.map((item: any, index: any) => (
+                  <tr key={index} className={`$ bg-gray-100 dark:bg-gray-700 dark:text-gray-100 text-gray-700`}>
+                    <td className="border border-gray-400 dark:border-gray-600 px-2 py-1">{item.ip}</td>
+                    <td className="border border-gray-400 dark:border-gray-600 px-2 py-1">{dayjs(item.dataAcesso).format('DD/MM/YYYY HH:mm:ss')}</td>
+                    <td className={`border border-gray-400 dark:border-gray-600 px-2 py-1  text-white ${repeatedIps.has(item.ip) ? "bg-red-500 dark:bg-red-900" : "bg-green-600"}`}>{repeatedIps.has(item.ip) ? 'Repetido' : 'Único'}</td>
                   </tr>
                 ))}
               </tbody>

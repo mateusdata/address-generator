@@ -170,7 +170,7 @@ const App: React.FC = () => {
       {contextHolder}
       <div className='flex gap-2 items-center-center flex-col sm:flex-row items-center'>
         <div className='flex gap-5'>
-          <h1 className='font-medium text-lg text-center'>Gerador de Estados e DDDs</h1>
+          <h1 className='font-medium text-lg text-center'>Gerador de Endereço por DDDs</h1>
           <a href="https://github.com/mateusdata"><GithubOutlined className='' style={{ fontSize: 25, }} /></a>
         </div>
 

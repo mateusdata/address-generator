@@ -5,7 +5,7 @@ import dados from './utils/Dados';
 import { FloatButton, QRCode, Spin, notification } from 'antd';
 import { LoadingOutlined, GithubOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import { ReloadOutlined } from '@ant-design/icons';
+import { ReloadOutlined,DeleteOutlined  } from '@ant-design/icons';
 import 'animate.css';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
@@ -266,10 +266,10 @@ const App: React.FC = () => {
           <h3 className='flex gap-2  lg:text-2xl'>IP atual: <p className='text-orange-500 lg:text-2xl'>{ip}</p></h3>
         </div>
         <div className='flex flex-col  mt-5'>
-          <span>Ips usados recentemente:</span>
-          {myIps && <button onClick={deleteIps} type="button" className="py-1 dark:bg-[#4e4f52] px-3 w-52 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-500  hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none text-white dark:hover:bg-red-300 dark:text-red-50 dark:hover:text-red-50">
-            Limpar IPS
+          {myIps && <button onClick={deleteIps} type="button" className="py-1 mb-1 dark:bg-[#4e4f52] px-3 lg:w-32 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-500  hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none text-white dark:hover:bg-red-300 dark:text-red-50 dark:hover:text-red-50">
+            Limpar IPS <DeleteOutlined />
           </button>}
+          <span>Ips usados recentemente:</span>
 
           <div className="overflow-x-auto mt-2">
             <table className="table-auto w-[95%] mb-2">

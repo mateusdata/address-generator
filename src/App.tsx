@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import cepEstados from './utils/CepEstados';
 import dados from './utils/Dados';
-import { QRCode, Spin, notification } from 'antd';
+import { FloatButton, QRCode, Spin, notification } from 'antd';
 import { LoadingOutlined, GithubOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
+import { ReloadOutlined } from '@ant-design/icons';
+import 'animate.css';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
@@ -23,6 +26,58 @@ const App: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [myIps, setMyIps] = useState<any>([]);
   const [darkMode, setDarkMode] = useState(localStorage.theme === 'dark');
+  const [refress, setRefress] = useState(true)
+
+
+  const hasFetchedIp = useRef(false);
+
+  const [alertShown, setAlertShown] = useState(true);
+
+  useEffect(() => {
+    const savedIpsString = localStorage.getItem('myIps');
+    if (savedIpsString) {
+      const savedIpsArray = JSON.parse(savedIpsString);
+      setMyIps(savedIpsArray);
+    }
+
+    const fetchIp = async () => {
+      try {
+        if (!hasFetchedIp.current) {
+          hasFetchedIp.current = true;
+          const response = await axios.get('https://api.ipify.org?format=json');
+          const newIp = response.data.ip;
+          setIp(newIp);
+
+          setMyIps((prevIps: any) => {
+            const currentDateTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
+            const updatedIps = [...prevIps, { ip: newIp, dataAcesso: currentDateTime }];
+
+            // Check if the new IP is repeated
+            const isRepeated = prevIps.some((ipItem: any) => ipItem.ip === newIp);
+            if (isRepeated && updatedIps.length > prevIps.length) {
+              const notify = (type: NotificationType) => {
+                api[type]({
+                  message: `Seu IP ${newIp} está repetido`,
+                  description: '',
+                });
+              };
+              notify("error");
+              setAlertShown(false);
+            }
+
+
+            localStorage.setItem('myIps', JSON.stringify(updatedIps));
+            return updatedIps;
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao buscar o IP:', error);
+      }
+    };
+
+    fetchIp();
+  }, [alertShown, api, refress]);
+
 
   useEffect(() => {
     if (darkMode) {
@@ -34,36 +89,6 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
-  useEffect(() => {
-    const savedIpsString = localStorage.getItem('myIps');
-    if (savedIpsString) {
-      const savedIpsArray = JSON.parse(savedIpsString);
-      setMyIps(savedIpsArray);
-    }
-
-    const fetchIp = async () => {
-      try {
-        const response = await axios.get('https://api.ipify.org?format=json');
-        const newIp = response.data.ip;
-        setIp(newIp);
-
-        setMyIps((prevIps: any) => {
-          if (!prevIps.includes(newIp)) {
-            const updatedIps = [...prevIps, newIp];
-            localStorage.setItem('myIps', JSON.stringify(updatedIps));
-            return updatedIps;
-          }
-          return prevIps;
-        });
-      } catch (error) {
-        console.error('Erro ao buscar o IP:', error);
-      }
-    };
-
-    fetchIp();
-  }, []);
-
-
 
 
 
@@ -74,6 +99,7 @@ const App: React.FC = () => {
       description: '',
     });
   };
+
 
   const consultCep = async (cep: any, retryCount: number = 0): Promise<void> => {
     try {
@@ -132,15 +158,21 @@ const App: React.FC = () => {
     setMyIps("")
     window.location.reload();
   }
-
+  const repeatedIps = new Set();
+  myIps.forEach((item: any) => {
+    if (myIps.filter((ipItem: any) => ipItem.ip === item.ip).length > 1) {
+      repeatedIps.add(item.ip);
+    }
+  });
   return (
-    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-200 min-h-screen'>
+    <div className='p-5 dark:bg-[#202124] dark:text-gray-400 bg-gray-200 min-h-screen xl:flex xl:flex-row'>
 
+      <div>
       {contextHolder}
       <div className='flex gap-2 items-center-center flex-col sm:flex-row items-center'>
         <div className='flex gap-5'>
           <h1 className='font-medium text-lg text-center'>Gerador de Estados e DDDs</h1>
-          <a href="https://github.com/mateusdata"><GithubOutlined className='animate-pulse' style={{ fontSize: 25, }} /></a>
+          <a href="https://github.com/mateusdata"><GithubOutlined className='' style={{ fontSize: 25, }} /></a>
         </div>
 
         <button className="bg-gray-700 hover:bg-gray-800 text-white dark:text-gray-400 font-bold py-1 px-2 rounded" onClick={() => setDarkMode(!darkMode)}>
@@ -185,16 +217,10 @@ const App: React.FC = () => {
         </form>
 
 
-        <QRCode
-          errorLevel="H"
-          value="https://datagerador.vercel.app/"
-          icon="https://icones.pro/wp-content/uploads/2021/02/icone-de-broche-de-localisation-bleue.png"
-        />
-
       </div>
       {false && <a href={url}>{url}</a>}
 
-      <div className='mt-5'>
+      <div className='mt-2 animate__animated animate__slideInLeft'>
 
         <div className='text-red-600  min-h-8 min-w-6'>
           <span>
@@ -206,7 +232,7 @@ const App: React.FC = () => {
           {loading && <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />}
         </span>
 
-        <button className='flex flex-wrap gap-2 border dark:border-gray-800 p-2 rounded-lg py-5 mt-5'>
+        <button className='flex flex-wrap gap-2 border dark:border-gray-800 p-2 rounded-lg py-5 mt-2 xl:w-1/2'>
           {dados.map((item, index) => (
             <button onClick={() => consultCep(item.uf)} disabled={loading}
               className={`hover:text-ellipsis active:outline-blue-500  dark:active:outline-gray-900
@@ -222,13 +248,7 @@ const App: React.FC = () => {
 
             ${index > 16 && index < 22 && "bg-gray-800 hover:bg-gray-800"}
             ${index > 21 && "bg-[#4527a0] hover:bg-[#4527a0]"}
-            
-            
-
-
-
-
- 
+                     
             rounded-lg ${loading ? "bg-gray-500 text-gray-50 dark:text-gray-400 hover:bg-gray-500 dark:active:outline-gray-900 active:outline-gray-300 " : "bg-blue-700 dark:bg-gray-800 hover:bg-blue-900 "}`} key={index}>
               <p>{item.estado} : {item.ddds}</p>
             </button>
@@ -236,24 +256,53 @@ const App: React.FC = () => {
         </button>
 
       </div>
-      <div>
-        <h3 className='flex gap-2'>Seu IP é 🧐 : <p className='text-green-500 animate-pulse'>{ip}</p></h3>
-      </div>
-      <div className='flex flex-col  mt-5'>
-        <span>Ips usados recentemente:</span>
-        {myIps && <button onClick={deleteIps} type="button" className="py-1 dark:bg-[#4e4f52] px-3 w-52 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-400  hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none text-white dark:hover:bg-red-300 dark:text-red-50 dark:hover:text-red-50">
-          Limpar IPS
-        </button>}
 
-        <div className='flex flex-col gap-2 mt-2 overflow-auto border dark:border-gray-600 max-h-52 bg-gray-100 dark:bg-[#202124] w-full sm:w-1/5 rounded-lg p-1 shadow-2xl'>
-          {myIps && myIps?.map((item: any, index: number) => (
-            <span className='rounded-xl text-red-500 dark:text-red-300 ' key={index}>{item}</span>
-          ))}
+      </div>
+
+
+
+      <div className='xl:w-full overflow-auto lg:max-h-[85vh] xl:border-gray-300 animate__animated animate__slideInUp rounded-2xl shadow-md xl:border p-5'>
+        <div>
+          <h3 className='flex gap-2  lg:text-2xl'>IP atual: <p className='text-orange-500 lg:text-2xl'>{ip}</p></h3>
+        </div>
+        <div className='flex flex-col  mt-5'>
+          <span>Ips usados recentemente:</span>
+          {myIps && <button onClick={deleteIps} type="button" className="py-1 dark:bg-[#4e4f52] px-3 w-52 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-500  hover:bg-red-500 disabled:opacity-50 disabled:pointer-events-none text-white dark:hover:bg-red-300 dark:text-red-50 dark:hover:text-red-50">
+            Limpar IPS
+          </button>}
+
+          <div className="overflow-x-auto mt-2">
+            <table className="table-auto w-[95%] mb-2">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border border-gray-400 px-2 py-1">IP</th>
+                  <th className="border border-gray-400 px-2 py-1">Data de Acesso</th>
+                  <th className="border border-gray-400 px-2 py-1">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {myIps.slice().reverse().map((item: any, index: any) => (
+                  <tr key={index} className={`$ bg-gray-100 text-gray-700`}>
+                    <td className="border border-gray-400 px-2 py-1">{item.ip}</td>
+                    <td className="border border-gray-400 px-2 py-1">{dayjs(item.dataAcesso).format('DD/MM/YYYY HH:mm:ss')}</td>
+                    <td className={`border border-gray-400 px-2 py-1  text-white ${repeatedIps.has(item.ip) ? "bg-red-500" : "bg-green-600"}`}>{repeatedIps.has(item.ip) ? 'Repetido' : 'Único'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <span className=''>{`Total de IPs acessados ${myIps?.length}`}</span>
+          </div>
+
+
+
         </div>
       </div>
 
+      <FloatButton onClick={() => { hasFetchedIp.current = false; setRefress(!refress) }} icon={<ReloadOutlined />}
+            shape="circle" className='bg-blue-600 text-blue-100' tooltip={<div>Atualizar IP</div>} />
+
     </div>
-  );
+  )
 }
 
 export default App;

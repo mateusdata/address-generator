@@ -37,7 +37,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     console.log(TOKEN)
-    const savedIpsString = localStorage.getItem('myIps');
+    const savedIpsString = localStorage.getItem('ips');
     if (savedIpsString) {
       const savedIpsArray = JSON.parse(savedIpsString);
       setMyIps(savedIpsArray);
@@ -71,7 +71,7 @@ const App: React.FC = () => {
             }
 
 
-            localStorage.setItem('myIps', JSON.stringify(updatedIps));
+            localStorage.setItem('ips', JSON.stringify(updatedIps));
             return updatedIps;
           });
         }
@@ -159,7 +159,7 @@ const App: React.FC = () => {
   };
 
   const deleteIps = () => {
-    localStorage.removeItem("myIps")
+    localStorage.removeItem("ips")
     setMyIps("")
   }
   const repeatedIps = new Set();

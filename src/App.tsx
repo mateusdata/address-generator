@@ -29,7 +29,7 @@ const App: React.FC = () => {
   const [myIps, setMyIps] = useState<any>([]);
   const [darkMode, setDarkMode] = useState(localStorage.theme === 'dark');
   const [refress, setRefress] = useState(true)
-
+  const [totalCep, setTotalCep] = useState(cepEstados)
 
   const hasFetchedIp = useRef(false);
 
@@ -233,6 +233,9 @@ const App: React.FC = () => {
           </div>
           <span className='flex gap-3'>
             <h3>Lista de Estados e DDDs:</h3>
+
+
+
             {loading && <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />}
           </span>
 
@@ -259,6 +262,13 @@ const App: React.FC = () => {
             ))}
           </button>
 
+          <div className='flex border flex-wrap p-5 gap-5'>
+            {Object.keys(totalCep).map(propriedade => (
+              <div className='borderflex flex-col' key={propriedade}>
+                <span className='w-52' >{` total de ceps em - ${propriedade}: ${totalCep[propriedade].length}`}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
@@ -291,7 +301,7 @@ const App: React.FC = () => {
                   <Popover placement="leftTop" content={
                     <div className="flex flex-col">
                       <span className='text-blue-500'>Cidade: {item.host.city}</span>
-                      <span className='text-blue-500'>País: {item.host.country === "BR" ? "Brasil 🇧🇷": item.host.country}</span>
+                      <span className='text-blue-500'>País: {item.host.country === "BR" ? "Brasil 🇧🇷" : item.host.country}</span>
                       <a className='text-blue-500' href={item.host.hostname}>Hostname: {item.host.hostname} </a>
                       <span className='text-blue-500'>Código Postal: {item.host.postal}</span>
                       <span className='text-blue-500'>Região: {item.host.region}</span>

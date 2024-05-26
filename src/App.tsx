@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { ReloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import 'animate.css';
 import { AccessRecord } from './interfaces/Main';
+import IPInfoComponent from './components/IPInfoComponent';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
@@ -30,7 +31,9 @@ const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(localStorage.theme === 'dark');
   const [refress, setRefress] = useState(true)
   const [totalCep, setTotalCep] = useState(cepEstados)
+  const [viewQtsCeps, setViewQtsCeps] = useState<boolean>(false)
 
+  const [showNewIp, setShowNewIp] = useState<boolean>(false)
   const hasFetchedIp = useRef(false);
 
   const [alertShown, setAlertShown] = useState(true);
@@ -48,7 +51,7 @@ const App: React.FC = () => {
         if (!hasFetchedIp.current) {
           hasFetchedIp.current = true;
           const response = await axios.get('https://api.ipify.org?format=json');
-          const host = await axios.get(`https://ipinfo.io/181.216.222.58?token=${TOKEN}`);
+          const host = await axios.get(`https://ipinfo.io/${response?.data?.ip}?token=${TOKEN}`);
           const currentDateTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
           const newIp = response.data.ip;
           console.log(myIps)
@@ -262,13 +265,35 @@ const App: React.FC = () => {
             ))}
           </button>
 
-          <div className='flex border flex-wrap p-5 gap-5'>
+          <div className='flex flex-col sm:flex-row gap-2'>
+
+            <button onClick={() => {
+              setShowNewIp(false)
+              setViewQtsCeps(!viewQtsCeps)
+
+            }} type="button" className={`${viewQtsCeps && "bg-green-500 text-white"} py-3 my-5 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-blue-600 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-blue-500 dark:hover:bg-neutral-800 `}>
+              Total de ceps
+            </button>
+            <button onClick={() => {
+              setViewQtsCeps(false)
+
+              setShowNewIp(!showNewIp)
+            }} type="button" className={` ${showNewIp && "bg-green-500 text-white"} py-3 my-5 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-blue-600 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-blue-500 dark:hover:bg-neutral-800`}>
+              Ips maiame
+            </button>
+          </div>
+
+
+          {viewQtsCeps && <div className='flex border flex-wrap p-5 animate__animated animate__slideInUp gap-5'>
             {Object.keys(totalCep).map(propriedade => (
               <div className='borderflex flex-col' key={propriedade}>
                 <span className='w-52' >{` total de ceps em - ${propriedade}: ${totalCep[propriedade].length}`}</span>
               </div>
             ))}
-          </div>
+          </div>}
+
+
+          {showNewIp && <IPInfoComponent />}
         </div>
 
       </div>
